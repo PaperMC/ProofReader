@@ -13,17 +13,15 @@ import static io.papermc.proofreader.proofreader.ProofReaderConfig.Config;
 public class CommentService {
 
     private static final Pattern checkboxPattern = Pattern.compile("(?m)^- \\[([ x])] (.+)$");
-    private final StateService states;
     private final GithubService github;
     private final Config config;
 
-    public CommentService(StateService states, GithubService github, Config config) {
-        this.states = states;
+    public CommentService(GithubService github, Config config) {
         this.github = github;
         this.config = config;
     }
 
-    public void addOrUpdateProofReadingComment(State state) {
+    void addOrUpdateProofReadingComment(State state) {
         String comment;
         if (state.firstTimer && !state.approved) {
             comment = createWelcomeMessage(state);
@@ -35,7 +33,6 @@ public class CommentService {
             github.updateComment(state.commentId, comment);
         } else {
             state.commentId = github.addComment(state.prNumber, comment);
-            states.updateState(state);
         }
     }
 
@@ -73,17 +70,17 @@ public class CommentService {
 
     private String createdBrowseUrl(State state) {
         if (state.branch == null) return "pending";
-        return "https://github.com/" + config.repoOwner() + "/" + config.repoName() + "/tree/" + state.branch;
+        return "https://github.com/" + config.targetRepo().owner() + "/" + config.targetRepo().name() + "/tree/" + state.branch;
     }
 
     private String createdOpenUrl(State state) {
         if (state.branch == null) return "pending";
-        return "https://github.com/" + config.repoOwner() + "/" + config.repoName() + "/tree/" + state.branch;
+        return "https://github.dev/" + config.targetRepo().owner() + "/" + config.targetRepo().name() + "/tree/" + state.branch;
     }
 
     private String createDiffsUrl(State state) {
         if (state.branch == null) return "pending";
-        return "https://diffs.dev/?github_url=https%3A%2F%2Fgithub.com%2F" + config.repoOwner() + "%2F" + config.repoName() + " %2Fcompare%2Fmain..." + state.branch;
+        return "https://diffs.dev/?github_url=https%3A%2F%2Fgithub.com%2F" + config.targetRepo().owner() + "%2F" + config.targetRepo().name() + "%2Fcompare%2Fmain..." + state.branch;
     }
 
     public Set<String> newCheckedBoxes(String oldComment, String newComment) {

@@ -44,12 +44,12 @@ class GithubWebhookController {
         var state = states.getState(payload.number());
         state.firstTimer = payload.pull_request().author_association() == AuthorAssociation.FIRST_TIMER;
         if (state.firstTimer && !state.approved) {
-            comments.addOrUpdateProofReadingComment(state);
+            states.updateState(state);
             return;
         }
 
         builds.triggerBuild(state);
-        comments.addOrUpdateProofReadingComment(state);
+        states.updateState(state);
     }
 
     @PostMapping(headers = "X-GitHub-Event=issue_comment")
@@ -58,11 +58,9 @@ class GithubWebhookController {
         if (payload.action() == Action.CREATED && hasPerms(payload.comment().author_association())) {
             if (payload.comment().body().trim().equalsIgnoreCase("/force-update")) {
                 builds.triggerBuild(state);
-                comments.addOrUpdateProofReadingComment(state);
                 github.addReaction(payload.comment().id(), "+1");
             } else if (payload.comment().body().trim().equalsIgnoreCase("/rebase")) {
                 builds.triggerRebase(state);
-                comments.addOrUpdateProofReadingComment(state);
                 github.addReaction(payload.comment().id(), "+1");
             }
         } else if (payload.action() == Action.EDITED && payload.comment().id() == state.commentId) {
@@ -77,7 +75,6 @@ class GithubWebhookController {
                     builds.triggerBuild(state);
                 }
             }
-            comments.addOrUpdateProofReadingComment(state);
         }
     }
 

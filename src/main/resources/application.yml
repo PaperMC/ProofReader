@@ -3,9 +3,13 @@ spring:
     name: ProofReader
 
 proofreader:
-  repoOwner: PaperMC
-  repoName: Paper
   installationId: 12345
   clientId: AbCd123
+  sourceRepo:
+    owner: PaperMC
+    name: Paper
+  targetRepo:
+    owner: PaperMC
+    name: ProofReading
   privateKey: |
     -----BEGIN RSA PRIVATE KEY-----

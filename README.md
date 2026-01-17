@@ -14,10 +14,19 @@ Collection of services to help with "proofreading"/reviewing Paper PRs.
 * configure the application.yml:
 ```yml
 proofreader:
-  repoOwner: PaperMC
-  repoName: Paper
+  sourceRepo:
+    owner: PaperMC
+    name: Paper
+  targetRepo:
+    owner: PaperMC
+    name: ProofReading
   installationId: 12345
   clientId: AbCd123
   privateKey: |
   -----BEGIN RSA PRIVATE KEY-----
+```
+* optionally the paper shared build cache can be utilized by providing credentials:
+```yml
+  buildCacheUser: USER_
+  buildCachePassword: xxxx
 ```

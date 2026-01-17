@@ -3,7 +3,6 @@ package io.papermc.proofreader.proofreader;
 import io.papermc.proofreader.proofreader.ProofReaderConfig.Config;
 import io.papermc.proofreader.proofreader.github.GithubService;
 import io.papermc.proofreader.proofreader.service.CommentService;
-import io.papermc.proofreader.proofreader.service.StateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CommentServiceTest {
 
     @Mock
-    StateService states;
-    @Mock
     GithubService github;
     @Mock
     Config config;
@@ -27,7 +24,7 @@ class CommentServiceTest {
 
     @BeforeEach
     void setUp() {
-        comments = new CommentService(states, github, config);
+        comments = new CommentService(github, config);
     }
 
     @Test

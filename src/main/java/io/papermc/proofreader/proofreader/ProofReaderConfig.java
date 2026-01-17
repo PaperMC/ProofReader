@@ -1,5 +1,6 @@
 package io.papermc.proofreader.proofreader;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
@@ -12,8 +13,17 @@ import tools.jackson.databind.MapperFeature;
 public class ProofReaderConfig {
 
     @ConfigurationProperties("proofreader")
-    public record Config(String repoOwner, String repoName, String clientId, String installationId, String privateKey) {
+    public record Config(
+            Repo sourceRepo,
+            Repo targetRepo,
+            String clientId,
+            String installationId,
+            String privateKey,
+            @Nullable String buildCacheUser,
+            @Nullable String buildCachePassword
+    ) {
 
+        public record Repo(String owner, String name) {}
     }
 
     @Bean

@@ -12,11 +12,18 @@ public class StateService {
     // TODO persist?
     private final Map<Long, State> stateMap = new HashMap<>();
 
+    private final CommentService commentService;
+
+    public StateService(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
     public State getState(long number) {
         return stateMap.computeIfAbsent(number, State::new);
     }
 
-    void updateState(State state) {
+    public void updateState(State state) {
+        commentService.addOrUpdateProofReadingComment(state);
         stateMap.put(state.prNumber, state);
         System.out.println("updated state: " + state);
     }
@@ -28,6 +35,7 @@ public class StateService {
         public boolean firstTimer;
         public boolean approved = false;
         public long commentId = -1;
+        public @Nullable String buildDir;
 
         public State(long prNumber) {
             this.prNumber = prNumber;
@@ -42,6 +50,7 @@ public class StateService {
                    ", firstTimer=" + firstTimer +
                    ", approved=" + approved +
                    ", commentId=" + commentId +
+                   ", buildDir='" + buildDir + '\'' +
                    '}';
         }
     }

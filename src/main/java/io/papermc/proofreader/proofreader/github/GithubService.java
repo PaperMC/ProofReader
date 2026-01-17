@@ -29,7 +29,7 @@ public class GithubService {
                 .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
                 .defaultHeader("Accept", "application/vnd.github+json")
                 .defaultHeader("User-Agent", "ProofReader <github.com/PaperMC/ProofReader>")
-                .defaultUriVariables(Map.of("owner", config.repoOwner(), "repo", config.repoName()))
+                .defaultUriVariables(Map.of("owner", config.sourceRepo().owner(), "repo", config.sourceRepo().name()))
                 .requestInitializer((request -> request.getHeaders().setBearerAuth(getGitHubToken())))
                 .build();
     }
