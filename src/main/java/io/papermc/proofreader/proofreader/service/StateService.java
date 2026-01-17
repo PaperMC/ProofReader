@@ -30,15 +30,21 @@ public class StateService {
 
     public static class State {
         public final long prNumber;
+        public final String branch;
         public String status = "Pending";
-        public @Nullable String branch = null;
         public boolean firstTimer;
         public boolean approved = false;
         public long commentId = -1;
         public @Nullable String buildDir;
+        public boolean completed;
 
         public State(long prNumber) {
             this.prNumber = prNumber;
+            if (this instanceof MainState) {
+                this.branch = "main";
+            } else {
+                this.branch = "pr/" + prNumber;
+            }
         }
 
         @Override
@@ -52,6 +58,12 @@ public class StateService {
                    ", commentId=" + commentId +
                    ", buildDir='" + buildDir + '\'' +
                    '}';
+        }
+    }
+
+    public static class MainState extends State {
+        public MainState() {
+            super(-1);
         }
     }
 }

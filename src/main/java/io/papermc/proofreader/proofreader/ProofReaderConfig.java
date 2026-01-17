@@ -23,7 +23,15 @@ public class ProofReaderConfig {
             @Nullable String buildCachePassword
     ) {
 
-        public record Repo(String owner, String name) {}
+        public record Repo(String owner, String name) {
+            public String withSlash() {
+                return owner + "/" + name;
+            }
+
+            public String withEscapedSlash() {
+                return owner + "%2F" + name;
+            }
+        }
     }
 
     @Bean

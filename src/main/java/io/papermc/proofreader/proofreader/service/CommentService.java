@@ -1,6 +1,7 @@
 package io.papermc.proofreader.proofreader.service;
 
 import io.papermc.proofreader.proofreader.github.GithubService;
+import io.papermc.proofreader.proofreader.service.StateService.MainState;
 import io.papermc.proofreader.proofreader.service.StateService.State;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,8 @@ public class CommentService {
     }
 
     void addOrUpdateProofReadingComment(State state) {
+        if (state instanceof MainState) return;
+
         String comment;
         if (state.firstTimer && !state.approved) {
             comment = createWelcomeMessage(state);
@@ -69,18 +72,18 @@ public class CommentService {
     }
 
     private String createdBrowseUrl(State state) {
-        if (state.branch == null) return "pending";
-        return "https://github.com/" + config.targetRepo().owner() + "/" + config.targetRepo().name() + "/tree/" + state.branch;
+        if (state.completed) return "pending";
+        return "https://github.com/" + config.targetRepo().withSlash() + "/tree/" + state.branch;
     }
 
     private String createdOpenUrl(State state) {
-        if (state.branch == null) return "pending";
-        return "https://github.dev/" + config.targetRepo().owner() + "/" + config.targetRepo().name() + "/tree/" + state.branch;
+        if (state.completed) return "pending";
+        return "https://github.dev/" + config.targetRepo().withSlash() + "/tree/" + state.branch;
     }
 
     private String createDiffsUrl(State state) {
-        if (state.branch == null) return "pending";
-        return "https://diffs.dev/?github_url=https%3A%2F%2Fgithub.com%2F" + config.targetRepo().owner() + "%2F" + config.targetRepo().name() + "%2Fcompare%2Fmain..." + state.branch;
+        if (state.completed) return "pending";
+        return "https://diffs.dev/?github_url=https%3A%2F%2Fgithub.com%2F" + config.targetRepo().withEscapedSlash() + "%2Fcompare%2Fmain..." + state.branch;
     }
 
     public Set<String> newCheckedBoxes(String oldComment, String newComment) {

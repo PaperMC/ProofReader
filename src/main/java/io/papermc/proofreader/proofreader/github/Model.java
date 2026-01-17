@@ -32,6 +32,9 @@ public class Model {
         }
     }
 
+    record PushPayload(String ref, String before, String after, Repository repository, User sender) {
+    }
+
     record User(String login, long id) {
     }
 

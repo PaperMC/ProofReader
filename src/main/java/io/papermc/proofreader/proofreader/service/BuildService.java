@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static io.papermc.proofreader.proofreader.service.StateService.*;
 import static io.papermc.proofreader.proofreader.service.StateService.State;
 
 @Service
@@ -53,7 +54,6 @@ public class BuildService {
             pushSource(state);
 
             state.status = "Build completed successfully";
-            state.branch = "pr/" + state.prNumber;
             states.updateState(state);
         } catch (Exception e) {
             state.status = "Build failed: " + e.getMessage();
@@ -86,7 +86,7 @@ public class BuildService {
             exec(buildDir, "Merging resources", "git", "merge", "--allow-unrelated-histories", "resources/main");
 
             // pushing
-            exec(buildDir, "Adding proofreader remote", "git", "remote", "add", "proofreader", "https://github.com/" + config.targetRepo().owner() + "/" + config.targetRepo().name());
+            exec(buildDir, "Adding proofreader remote", "git", "remote", "add", "proofreader", "https://github.com/" + config.targetRepo().withSlash());
             exec(buildDir, "Pushing to proofreader", "git", "push", "proofreader", "-f");
         } catch (Exception e) {
             throw new RuntimeException("Pushing source failed", e);
@@ -120,8 +120,12 @@ public class BuildService {
         try {
             System.out.println("Cloning repo into " + state.buildDir);
             exec(state, "Git init", "git", "init");
-            exec(state, "Git fetch", "git", "fetch", "https://github.com/" + config.sourceRepo().owner() + "/" + config.sourceRepo().name() + ".git", "pull/" + state.prNumber + "/head:pr/" + state.prNumber);
-            exec(state, "Git switch", "git", "switch", "pr/" + state.prNumber);
+            var fetchTarget = "pull/" + state.prNumber + "/head:" + state.branch;
+            if (state instanceof MainState) {
+                fetchTarget = state.branch + ":" + state.branch;
+            }
+            exec(state, "Git fetch", "git", "fetch", "https://github.com/" + config.sourceRepo().withSlash() + ".git", fetchTarget);
+            exec(state, "Git switch", "git", "switch", state.branch);
         } catch (Exception e) {
             throw new RuntimeException("Git clone failed", e);
         }
@@ -149,7 +153,11 @@ public class BuildService {
 
     private void ensureEmptyBuildDir(State state) {
         if (state.buildDir == null) {
-            state.buildDir = "work/builds/pr-" + state.prNumber;
+            if (state instanceof MainState) {
+                state.buildDir = "work/builds/main";
+            } else {
+                state.buildDir = "work/builds/pr-" + state.prNumber;
+            }
         }
         var dir = Path.of(state.buildDir);
         if (Files.exists(dir)) {
