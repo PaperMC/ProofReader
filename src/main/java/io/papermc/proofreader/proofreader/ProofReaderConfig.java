@@ -16,6 +16,7 @@ public class ProofReaderConfig {
     public record Config(
             Repo sourceRepo,
             Repo targetRepo,
+            String webhookSecret,
             String clientId,
             String installationId,
             String privateKey,

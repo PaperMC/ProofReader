@@ -20,6 +20,7 @@ proofreader:
   targetRepo:
     owner: PaperMC
     name: ProofReading
+  webhookSecret: someSecretValue
   installationId: 12345
   clientId: AbCd123
   privateKey: |
@@ -30,3 +31,6 @@ proofreader:
   buildCacheUser: USER_
   buildCachePassword: xxxx
 ```
+
+## Testing Hooks locally
+`gh webhook forward --repo={sourceRepo-owner}/{sourceRepo-name} --url="http://localhost:8080/github/webhook" --events=* --secret={webhookSecret}`

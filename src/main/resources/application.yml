@@ -11,5 +11,6 @@ proofreader:
   targetRepo:
     owner: PaperMC
     name: ProofReading
+  webhookSecret: supersecretwebhooksecret
   privateKey: |
     -----BEGIN RSA PRIVATE KEY-----
