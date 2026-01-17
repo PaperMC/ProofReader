@@ -17,7 +17,7 @@ public class BuildService {
 
         // TODO check if we have a repo, if so update, if not clone
         // TODO run gradle
-        // TODO save artifacts somewhere
+        // TODO save artifacts somewhere (api, dev bundle, paperclip)
         // TODO push source
 
         states.updateState(state);

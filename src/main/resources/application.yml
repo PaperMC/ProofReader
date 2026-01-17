@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ProofReader
+
+proofreader:
+  repoOwner: PaperMC
+  repoName: Paper
+  installationId: 12345
+  clientId: AbCd123
+  privateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
